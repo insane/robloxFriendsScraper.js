@@ -107,36 +107,7 @@
     });
 
     console.log(`Fetched ${merged.length} friends for user ${userId}.`);
-
     console.table(merged);
-
-    const toCsv = (rows) => {
-      const header = ["id", "username", "displayName", "hasVerifiedBadge"];
-      const esc = (v) => {
-        if (v == null) return "";
-        const s = String(v);
-        return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-      };
-      return [header.join(","), ...rows.map(r => header.map(h => esc(r[h])).join(","))].join("\n");
-    };
-
-    const csv = toCsv(merged);
-
-    try {
-      await navigator.clipboard.writeText(csv);
-      console.log("CSV copied to clipboard ✅");
-    } catch {
-      console.warn("Clipboard copy blocked; generating a downloadable CSV instead.");
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `friends_${userId}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
 
     const summary = {
       userId: Number(userId),
@@ -145,6 +116,7 @@
       sample: merged.slice(0, 10),
       all: merged
     };
+
     console.log("Summary:", summary);
     summary;
   } catch (err) {
