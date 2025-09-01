@@ -88,6 +88,7 @@
     }
     const idList = friends.map(f => f.id);
     const detailsMap = await getUserDetailsBatch(idList, { chunkSize: 100, delayMs: 120 });
+
     const merged = friends.map(f => {
       const d = detailsMap.get(f.id) || { id: f.id, name: "(unknown)", displayName: "(unknown)" };
       return {
@@ -97,14 +98,18 @@
         hasVerifiedBadge: f.hasVerifiedBadge
       };
     });
+
     merged.sort((a, b) => {
       const an = (a.username || "").toLowerCase();
       const bn = (b.username || "").toLowerCase();
       if (an && bn && an !== bn) return an < bn ? -1 : 1;
       return a.id - b.id;
     });
+
     console.log(`Fetched ${merged.length} friends for user ${userId}.`);
-    console.table(merged.slice(0, 20));
+
+    console.table(merged);
+
     const toCsv = (rows) => {
       const header = ["id", "username", "displayName", "hasVerifiedBadge"];
       const esc = (v) => {
@@ -114,14 +119,25 @@
       };
       return [header.join(","), ...rows.map(r => header.map(h => esc(r[h])).join(","))].join("\n");
     };
+
     const csv = toCsv(merged);
+
     try {
       await navigator.clipboard.writeText(csv);
       console.log("CSV copied to clipboard ✅");
     } catch {
-      console.warn("Could not copy CSV to clipboard. You can copy it from the log below:");
-      console.log(csv);
+      console.warn("Clipboard copy blocked; generating a downloadable CSV instead.");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `friends_${userId}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     }
+
     const summary = {
       userId: Number(userId),
       totalFriends: merged.length,
