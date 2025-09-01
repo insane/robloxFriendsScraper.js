@@ -1,3 +1,4 @@
+// NO-CSV BUILD
 (async () => {
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
@@ -80,6 +81,7 @@
   }
 
   try {
+    console.log("NO-CSV build running");
     const userId = getUserIdFromUrl();
     const friends = await getAllFriendIds(userId, { limit: 50, delayMs: 100 });
     if (friends.length === 0) {
