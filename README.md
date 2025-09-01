@@ -1,6 +1,6 @@
 # Roblox Friends Scraper
 
-This script allows you to fetch all friends of a given Roblox user directly from the browser console, including their **usernames**, **display names**, and **verified badge status**. The results are shown in a neat table, summarized, and also exported as a CSV (copied to your clipboard if possible).
+This script allows you to fetch all friends of a given Roblox user (even the ones with the UK policy restriction) directly from the browser console, including their **usernames**, **display names**, and **verified badge status**. The results are shown in a neat table, summarized, and also exported as a CSV (copied to your clipboard if possible).
 
 ## ⚡ How to Use
 
